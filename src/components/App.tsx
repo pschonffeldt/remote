@@ -19,8 +19,8 @@ function App() {
   const deboucedSeatchText = useDebounce(searchText, 250);
   const { jobItems, isLoading } = useJobItems(deboucedSeatchText);
 
-  const totalNumberOfResults = jobItems.length;
-  const jobItemsSliced = jobItems.slice(0, 7);
+  const totalNumberOfResults = jobItems?.length || 0;
+  const jobItemsSliced = jobItems?.slice(0, 7) || [];
 
   return (
     <>
