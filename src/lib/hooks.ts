@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { JobItem } from "./types";
+import { JobItem, JobItemExpanded } from "./types";
 import { BASE_API_URL } from "./constants";
 
 export function useActiveId() {
@@ -16,10 +16,30 @@ export function useActiveId() {
   return activeId;
 }
 
+export function useJobItem(id: number | null) {
+  const [jobItem, setJobItem] = useState<JobItemExpanded | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      const response = await fetch(`${BASE_API_URL}/${id}`);
+      const data = await response.json();
+      setIsLoading(false);
+      setJobItem(data.jobItem);
+    };
+    fetchData();
+  }, [id]);
+  return { jobItem, isLoading } as const;
+}
+
 export function useJobItems(searchText: string) {
   const [jobItems, setJobItems] = useState<JobItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  const totalNumberOfResults = jobItems.length;
   const jobItemsSliced = jobItems.slice(0, 7);
 
   useEffect(() => {
@@ -35,5 +55,15 @@ export function useJobItems(searchText: string) {
     fetchData();
   }, [searchText]);
 
-  return [jobItemsSliced, isLoading] as const;
+  return { jobItemsSliced, isLoading, totalNumberOfResults } as const;
+}
+
+export function useDebounce(value, delay = 500) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const timerId = setTimeout(() => setDebouncedValue(value), delay);
+    return () => clearTimeout(timerId);
+  }, [value, delay]);
+  return debouncedValue;
 }
