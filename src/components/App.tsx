@@ -15,6 +15,7 @@ import SortingControls from "./SortingControls";
 import { useDebounce, useJobItems } from "../lib/hooks";
 import { Toaster } from "react-hot-toast";
 import { RESULTS_PER_PAGE } from "../lib/constants";
+import { SortBy } from "../lib/types";
 
 function App() {
   // state
@@ -22,16 +23,23 @@ function App() {
   const deboucedSeatchText = useDebounce(searchText, 250);
   const { jobItems, isLoading } = useJobItems(deboucedSeatchText);
   const [currentPage, setCurrentPage] = useState(1);
-  console.log(currentPage);
+  const [sortBy, setSortBy] = useState<SortBy>("relevant");
 
   // derived / computedstate
   const totalNumberOfResults = jobItems?.length || 0;
   const totalNumberOfPages = totalNumberOfResults / RESULTS_PER_PAGE;
-  const jobItemsSliced =
-    jobItems?.slice(
-      currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE,
-      currentPage * RESULTS_PER_PAGE
-    ) || [];
+  const JobItemsSorted =
+    jobItems?.sort((a, b) => {
+      if (sortBy === "relevant") {
+        return b.relevanceScore - a.relevanceScore;
+      } else {
+        return a.daysAgo - b.daysAgo;
+      }
+    }) || [];
+  const jobItemsSortedAndSliced = JobItemsSorted.slice(
+    currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE,
+    currentPage * RESULTS_PER_PAGE
+  );
 
   // event handlers / actions
   const handleChangePage = (direction: "next" | "previous") => {
@@ -42,6 +50,10 @@ function App() {
     }
   };
 
+  const handleChangeSortBy = (newSortBy: SortBy) => {
+    setCurrentPage(1);
+    setSortBy(newSortBy);
+  };
   return (
     <>
       <Background />
@@ -58,10 +70,10 @@ function App() {
         <Sidebar>
           <SidebarTop>
             <ResultsCount totalNumberOfResults={totalNumberOfResults} />
-            <SortingControls />
+            <SortingControls sortBy={sortBy} onClick={handleChangeSortBy} />
           </SidebarTop>
 
-          <JobList jobItems={jobItemsSliced} isLoading={isLoading} />
+          <JobList jobItems={jobItemsSortedAndSliced} isLoading={isLoading} />
 
           <PaginationControls
             currentPage={currentPage}
