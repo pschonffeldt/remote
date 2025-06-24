@@ -10,6 +10,7 @@ type JobItemApiResponse = {
 
 const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
   const response = await fetch(`${BASE_API_URL}/${id}`);
+  // 4xx or 5xx error handling
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.description);
@@ -49,6 +50,11 @@ const fetchJobItems = async (
   searchText: string
 ): Promise<JobItemsApiResponse> => {
   const response = await fetch(`${BASE_API_URL}?search=${searchText}`);
+  // 4xx or 5xx error handling
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.description);
+  }
   const data = await response.json();
   return data;
 };
