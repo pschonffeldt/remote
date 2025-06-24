@@ -16,12 +16,25 @@ import { useDebounce, useJobItems } from "../lib/hooks";
 import { Toaster } from "react-hot-toast";
 
 function App() {
+  // state
   const [searchText, setSearchText] = useState("");
   const deboucedSeatchText = useDebounce(searchText, 250);
   const { jobItems, isLoading } = useJobItems(deboucedSeatchText);
+  const [currentPage, setCurrentPage] = useState(1);
+  console.log(currentPage);
 
+  // derived / computedstate
   const totalNumberOfResults = jobItems?.length || 0;
   const jobItemsSliced = jobItems?.slice(0, 7) || [];
+
+  // event handlers / actions
+  const handleChangePage = (direction: "next" | "previous") => {
+    if (direction === "next") {
+      setCurrentPage((prev) => prev + 1);
+    } else if (direction === "previous") {
+      setCurrentPage((prev) => prev - 1);
+    }
+  };
 
   return (
     <>
@@ -44,7 +57,10 @@ function App() {
 
           <JobList jobItems={jobItemsSliced} isLoading={isLoading} />
 
-          <PaginationControls />
+          <PaginationControls
+            currentPage={currentPage}
+            onClick={handleChangePage}
+          />
         </Sidebar>
 
         <JobItemContent />
