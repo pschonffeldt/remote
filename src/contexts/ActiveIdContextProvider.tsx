@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { useActiveId } from "../../lib/hooks";
+import { useActiveId } from "../lib/hooks";
 
 type ActiveIdContext = {
   activeId: number | null;

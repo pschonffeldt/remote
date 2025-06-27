@@ -20,7 +20,7 @@ export default function BookmarkIcon({ id }: BookmarkIconProps) {
       <BookmarkFilledIcon
         className={`
         ${bookmarkedIds.includes(id) ? "filled" : ""}
-        `}
+      `}
       />
     </button>
   );

@@ -13,10 +13,10 @@ export type JobItemExpanded = JobItem & {
   qualifications: string[];
   reviews: string[];
   duration: string;
-  salary: string;
   location: string;
+  salary: string;
   coverImgURL: string;
-  companyURL?: string;
+  companyURL: string;
 };
 
 export type PageDirection = "next" | "previous";

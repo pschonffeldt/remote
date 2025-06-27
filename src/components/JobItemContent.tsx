@@ -7,22 +7,17 @@ export default function JobItemContent() {
   const { jobItem, isLoading } = useJobItem(activeId);
 
   if (isLoading) {
-    return (
-      <section className="job-details">
-        <div>
-          <Spinner />
-        </div>
-      </section>
-    );
+    return <LoadingJobContent />;
   }
 
   if (!jobItem) {
     return <EmptyJobContent />;
   }
+
   return (
     <section className="job-details">
       <div>
-        <img src={jobItem.coverImgURL} />
+        <img src={jobItem.coverImgURL} alt="#" />
 
         <a className="apply-btn" href={jobItem.companyURL} target="_blank">
           Apply
@@ -100,6 +95,16 @@ export default function JobItemContent() {
             it!
           </p>
         </footer>
+      </div>
+    </section>
+  );
+}
+
+function LoadingJobContent() {
+  return (
+    <section className="job-details">
+      <div>
+        <Spinner />
       </div>
     </section>
   );
